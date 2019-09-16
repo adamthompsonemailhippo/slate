@@ -11,7 +11,7 @@ toc_footers:
   - <a href='https://www.emailhippo.com/compliance'>Compliance (ISO27001 and GDPR)</a>
 
 includes:
-  - errors
+  <!-- errors -->
 
 search: true
 ---
