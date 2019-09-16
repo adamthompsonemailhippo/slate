@@ -54,7 +54,7 @@ This is why Auth0 is the leader in developer-focused Identity Management, with m
 
 2. An Email Hippo account with a MORE API subscription and access to your API key.
 
-> To create an account and purchase a subscription for the MORE API please visit https://emailhippo.com
+**To create an account and purchase a subscription for the MORE API please visit** https://emailhippo.com 
 
 ## Configuration on Email Hippo
 
@@ -77,6 +77,11 @@ Once you have a subscription set up and your API key there is no further setup r
 7. Replace the code displayed in Auth0 with the javascript on this site
 
 8. Click on ‘Save’ or ‘Try this rule’ to use the function within your Auth0 sign up form and prevent sign ups with bad or disposable email addresses.
+
+**The MORE API (Edition2/Version3) contains multiple data points which you may wish to incorporate in your function, for example for prompting re-input of mis-spelled email addresses.** 
+
+**Our function uses the simple ‘result’ and ‘additional status’ to identify the email addresses which should not be accepted.**
+
 
 ```javascript
 
@@ -140,4 +145,3 @@ function (user, context, callback) {
 
 ```
 
-> The MORE API (Edition2/Version3) contains multiple data points which you may wish to incorporate in your function, for example for prompting re-input of mis-spelled email addresses. Our function uses the simple ‘result’ and ‘additional status’ to identify the email addresses which should not be accepted.
