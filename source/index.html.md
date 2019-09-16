@@ -2,7 +2,7 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - Auth0 Rule
+  - javascript
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -24,7 +24,7 @@ The purpose of this function is to prevent new users from signing up to your Aut
 
 Email Hippo is a an email validation service and data services provider you can trust.
 
-It provides accurate, guaranteed cloud-based email validation technology globally under ISO 27001 standards.
+We provide accurate, guaranteed cloud-based email validation technology globally under ISO 27001 standards.
 
 Businesses use Email Hippo to get cleaner email data, sort bad email addresses from lists and sign-ups and prevent disposable and other bad email addresses getting onto systems.
 
@@ -36,7 +36,13 @@ You can be up and running with MORE, the Email Hippo API in fifteen minutes or l
 
 Auth0 is an Identity as a Platform (IDaaS) service provider.
 
-Auth0 is Identity made simple and secure. With Auth0, you take perhaps the riskiest endeavor your engineering organization will face, managing and securing the identities of your customers and employees, and abstract away this complexity and risk with our Identity Platform. Our standards-based Identity-as-a-Service platform is built for developers, by developers so that your engineering organization can focus on building the solutions that delight your customers and drive your revenue. Our customers find that what typically either takes months to deliver or simply cannot be delivered via internal or external solutions, takes them only days to deliver with Auth0 due to our extensive SDKs, intuitive API, extensible architecture and our simple management dashboard. This is why Auth0 is the leader in developer-focused Identity Management, with more than 5,000 customers trusting us with billions of transactions everyday.
+Auth0 is Identity made simple and secure. With Auth0, you take perhaps the riskiest endeavor your engineering organization will face, managing and securing the identities of your customers and employees, and abstract away this complexity and risk with our Identity Platform. 
+
+Our standards-based Identity-as-a-Service platform is built for developers, by developers so that your engineering organization can focus on building the solutions that delight your customers and drive your revenue. 
+
+Our customers find that what typically either takes months to deliver or simply cannot be delivered via internal or external solutions, takes them only days to deliver with Auth0 due to our extensive SDKs, intuitive API, extensible architecture and our simple management dashboard. 
+
+This is why Auth0 is the leader in developer-focused Identity Management, with more than 5,000 customers trusting us with billions of transactions everyday.
 
 [Link to Auth0](https://auth0.com)
 
@@ -48,7 +54,7 @@ Auth0 is Identity made simple and secure. With Auth0, you take perhaps the riski
 
 2. An Email Hippo account with a MORE API subscription and access to your API key.
 
-To create an account and purchase a subscription for the MORE API please visit https://emailhippo.com
+> To create an account and purchase a subscription for the MORE API please visit https://emailhippo.com
 
 ## Configuration on Email Hippo
 
@@ -68,9 +74,11 @@ Once you have a subscription set up and your API key there is no further setup r
 
 6. Name your rule - for example ‘Email Hippo Email Address Validation’
 
-7. Replace the code shown with the code below:
+7. Replace the code displayed in Auth0 with the javascript on this site
 
-```Auth0 Rule
+8. Click on ‘Save’ or ‘Try this rule’ to use the function within your Auth0 sign up form and prevent sign ups with bad or disposable email addresses.
+
+```javascript
 
 function (user, context, callback) {
 
@@ -131,7 +139,5 @@ function (user, context, callback) {
 }
 
 ```
-
-7. Click on ‘Save’ or ‘Try this rule’ to use the function within your Auth0 sign up form to prevent sign ups with bad or disposable email addresses.
 
 > The MORE API (Edition2/Version3) contains multiple data points which you may wish to incorporate in your function, for example for prompting re-input of mis-spelled email addresses. Our function uses the simple ‘result’ and ‘additional status’ to identify the email addresses which should not be accepted.
