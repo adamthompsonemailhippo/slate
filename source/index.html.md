@@ -15,6 +15,9 @@ includes:
 
 search: true
 ---
+```JavaScript
+  Please scroll down to see the code for your Auth0 rule. 
+```
 
 ![Email Hippo and Auth0 integration](images/HeaderImage.png)
 
