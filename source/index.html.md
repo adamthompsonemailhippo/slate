@@ -2,11 +2,13 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - javascript
+  - JavaScript
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
+  - <a href='https://register.emailhippo.com/signup'>Sign Up for a Developer Key</a>
+  - <a href='https://help.emailhippo.com'>Support</a>
+  - <a href='https://www.emailhippo.com/compliance/terms-of-service/'>Terms of service</a>
+  - <a href='https://www.emailhippo.com/compliance'>Compliance (ISO27001 and GDPR)</a>
 
 includes:
   - errors
@@ -60,6 +62,8 @@ This is why Auth0 is the leader in developer-focused Identity Management, with m
 
 Once you have a subscription set up and your API key there is no further setup required within Email Hippo.
 
+For further information on the MORE API please visit https://www.emailhippo.com/resources/technical-resources/
+
 ## Configuration on Auth0
 
 1. Go to the Rules option on the menu
@@ -74,7 +78,7 @@ Once you have a subscription set up and your API key there is no further setup r
 
 6. Name your rule - for example ‘Email Hippo Email Address Validation’
 
-7. Replace the code displayed in Auth0 with the javascript on this site
+7. Replace the code displayed in Auth0 with the JavaScript shown here
 
 8. Click on ‘Save’ or ‘Try this rule’ to use the function within your Auth0 sign up form and prevent sign ups with bad or disposable email addresses.
 
@@ -83,7 +87,7 @@ Once you have a subscription set up and your API key there is no further setup r
 **Our function uses the simple ‘result’ and ‘additional status’ to identify the email addresses which should not be accepted.**
 
 
-```javascript
+```JavaScript
 
 function (user, context, callback) {
 
