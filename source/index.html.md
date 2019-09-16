@@ -2,10 +2,7 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
-  - javascript
+  - Auth0 Rule
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -17,223 +14,124 @@ includes:
 search: true
 ---
 
+![Email Hippo and Auth0 integration](images/HeaderImage.png)
+
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+The purpose of this function is to prevent new users from signing up to your Auth0 authenticated services with bad or disposable email addresses. Allowing use of email addresses which will hard bounce or are disposable will mean any subsequent attempt at contact with the user after sign-up will fail. Disposable email addresses are an early indicator of fraud. 
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+# About Email Hippo
 
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
+Email Hippo is a an email validation service and data services provider you can trust.
 
-# Authentication
+It provides accurate, guaranteed cloud-based email validation technology globally under ISO 27001 standards.
 
-> To authorize, use this code:
+Businesses use Email Hippo to get cleaner email data, sort bad email addresses from lists and sign-ups and prevent disposable and other bad email addresses getting onto systems.
 
-```ruby
-require 'kittn'
+You can be up and running with MORE, the Email Hippo API in fifteen minutes or less. MORE delivers 74 datapoints about every email address, so you can filter sign-ups, spot disposable emails and keep your data clean.
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
+[Link to Email Hippo](https://emailhippo.com)
 
-```python
-import kittn
+# About Auth0
 
-api = kittn.authorize('meowmeowmeow')
-```
+Auth0 is an Identity as a Platform (IDaaS) service provider.
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
+Auth0 is Identity made simple and secure. With Auth0, you take perhaps the riskiest endeavor your engineering organization will face, managing and securing the identities of your customers and employees, and abstract away this complexity and risk with our Identity Platform. Our standards-based Identity-as-a-Service platform is built for developers, by developers so that your engineering organization can focus on building the solutions that delight your customers and drive your revenue. Our customers find that what typically either takes months to deliver or simply cannot be delivered via internal or external solutions, takes them only days to deliver with Auth0 due to our extensive SDKs, intuitive API, extensible architecture and our simple management dashboard. This is why Auth0 is the leader in developer-focused Identity Management, with more than 5,000 customers trusting us with billions of transactions everyday.
 
-```javascript
-const kittn = require('kittn');
+[Link to Auth0](https://auth0.com)
 
-let api = kittn.authorize('meowmeowmeow');
-```
+# Configuration
 
-> Make sure to replace `meowmeowmeow` with your API key.
+## Prerequisites
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+1. An Auth0 account with a tenant setup
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+2. An Email Hippo account with a MORE API subscription and access to your API key.
 
-`Authorization: meowmeowmeow`
+To create an account and purchase a subscription for the MORE API please visit https://emailhippo.com
 
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
+## Configuration on Email Hippo
 
-# Kittens
+Once you have a subscription set up and your API key there is no further setup required within Email Hippo.
 
-## Get All Kittens
+## Configuration on Auth0
 
-```ruby
-require 'kittn'
+1. Go to the Rules option on the menu
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
+2. Under Settings on this page add a new key value
 
-```python
-import kittn
+3. Set the key as 'HIPPO_API_KEY' and the value as your Email Hippo API key
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+4. Click on ‘+ Create Rule’
 
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
+5. Select the ‘Empty Rule’ template
 
-```javascript
-const kittn = require('kittn');
+6. Name your rule - for example ‘Email Hippo Email Address Validation’
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
+7. Replace the code shown with the code below:
 
-> The above command returns JSON structured like this:
+```Auth0 Rule
 
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+function (user, context, callback) {
+
+  user.app_metadata = user.app_metadata || {};
+
+  // Users with the emailhippo_valid will return an error on login
+  // Setting emailhippo_valid to true will allow the user to log back in
+  const valid = user.app_metadata.emailhippo_valid;
+  if (valid !== undefined) {
+    return valid ? callback(null, user, context) : callback('Email address is not valid');
   }
-]
-```
 
-This endpoint retrieves all kittens.
+  if(!user.email) {
+    return callback(null, user, context);
+  }
 
-### HTTP Request
+  const request = require('request');
+  
+  const key = configuration.HIPPO_API_KEY;
+  
+  // Sign up at https://www.emailhippo.com/
+  const url = 'https://api.hippoapi.com/v3/more/json/'+ key +'/' + user.email;
 
-`GET http://example.com/api/kittens`
+  request({ url: url }, function (err, resp, body) {
+    if (err) {
+        return callback(null, user, context);
+    }
+    if (resp.statusCode !== 200) {
+        return callback(null, user, context);
+    }
 
-### Query Parameters
+    const hippo_resonse = JSON.parse(body);
+    
+    const result = hippo_resonse.emailVerification.mailboxVerification.result;
+    const reason = hippo_resonse.emailVerification.mailboxVerification.reason;
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+    user.app_metadata = user.app_metadata || {};
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
+    // Any email address that is either bad or a Disposable email address
+    // will be flagged as invalid. You can add your own custom logic if you want.
+    let valid = true;
+    if (result === 'Bad' || (result === 'Unverifiable' && reason === 'DomainIsWellKnownDea')){
+        valid = false;
+    } 
 
-## Get a Specific Kitten
+    user.app_metadata.emailhippo_result = result;
+    user.app_metadata.emailhippo_reason = reason;
+    user.app_metadata.emailhippo_valid = valid;
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+    auth0.users.updateAppMetadata(user.user_id, user.app_metadata)
+      .then(function(){
+        return valid ? callback(null, user, context) : callback('Email address is not valid');
+      })
+      .catch(function(err){
+        callback(null, user, context);
+      });
+  });
 }
+
 ```
 
-This endpoint retrieves a specific kitten.
+7. Click on ‘Save’ or ‘Try this rule’ to use the function within your Auth0 sign up form to prevent sign ups with bad or disposable email addresses.
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
-
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
-```
-
-This endpoint deletes a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
-
+> The MORE API (Edition2/Version3) contains multiple data points which you may wish to incorporate in your function, for example for prompting re-input of mis-spelled email addresses. Our function uses the simple ‘result’ and ‘additional status’ to identify the email addresses which should not be accepted.
